@@ -26,7 +26,7 @@ jobs:
           triplet: x64-windows
           token: ${{ github.token }}
 
-      - name: Install vcpkg (Windows)
+      - name: Install vcpkg (Linux)
         if: runner.os == 'Linux'
         uses: johnwason/vcpkg-action@v7.0.1
         with:
