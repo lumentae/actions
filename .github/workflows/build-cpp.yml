@@ -10,16 +10,28 @@ on:
 
 jobs:
   build:
-    runs-on: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install vcpkg
+      - name: Install vcpkg (Windows)
+        if: runner.os == 'Windows'
         uses: johnwason/vcpkg-action@v7.0.1
         with:
           pkgs: ${{ inputs.vcpkg_packages }}
           triplet: x64-windows
+          token: ${{ github.token }}
+
+      - name: Install vcpkg (Windows)
+        if: runner.os == 'Linux'
+        uses: johnwason/vcpkg-action@v7.0.1
+        with:
+          pkgs: ${{ inputs.vcpkg_packages }}
+          triplet: x64-linux
           token: ${{ github.token }}
 
       - name: Configure CMake (Debug)
