@@ -49,11 +49,11 @@ jobs:
       - name: Upload Debug
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: Windows
+          name: "${{ runner.os }}-Debug"
           path: build-cmake-debug/Debug
           
       - name: Upload Release
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: Windows
+          name: "${{ runner.os }}-Release"
           path: build-cmake-release/Release
