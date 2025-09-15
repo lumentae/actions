@@ -37,7 +37,7 @@ jobs:
       - name: Configure CMake (Debug)
         run: cmake -B ${{github.workspace}}/build-cmake-debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_MANIFEST_MODE=OFF
   
-      - name: Build (Release)
+      - name: Build (Debug)
         run: cmake --build ${{github.workspace}}/build-cmake-debug --config Debug
   
       - name: Configure CMake (Release)
