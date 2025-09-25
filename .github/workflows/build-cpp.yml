@@ -59,6 +59,7 @@ jobs:
         run: cmake --build ${{github.workspace}}/build-cmake-release --config Release
 
       - name: Run ls
+        if: runner.os == 'Linux'
         run: ls -la ${{github.workspace}}/build-cmake-release
   
       - name: Upload Debug
