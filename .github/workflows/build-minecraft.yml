@@ -24,7 +24,7 @@ jobs:
         run: gradle build
         
       - run: rm fabric/build/libs/*-*-*-*-*.jar
-      - run: cd fabric/build/libs && echo "FABRIC_NAME=$(ls fabric/build/libs/*.jar)" >> $GITHUB_ENV
+      - run: cd fabric/build/libs && echo "FABRIC_NAME=$(ls *.jar)" >> $GITHUB_ENV && cd ../../../
         
       - name: Upload Fabric
         uses: actions/upload-artifact@v4.6.2
@@ -33,7 +33,7 @@ jobs:
           path: fabric/build/libs/*.jar
 
       - run: rm neoforge/build/libs/*-*-*-*-*.jar
-      - run: cd neoforge/build/libs && echo "FABRIC_NAME=$(ls fabric/build/libs/*.jar)" >> $GITHUB_ENV
+      - run: cd neoforge/build/libs && echo "FABRIC_NAME=$(ls *.jar)" >> $GITHUB_ENV && cd ../../../
 
       - name: Upload Neoforge
         uses: actions/upload-artifact@v4.6.2
