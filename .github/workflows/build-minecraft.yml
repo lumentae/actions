@@ -33,7 +33,7 @@ jobs:
           path: fabric/build/libs/*.jar
 
       - run: rm neoforge/build/libs/*-*-*-*-*.jar
-      - run: cd neoforge/build/libs && echo "FABRIC_NAME=$(ls *.jar)" >> $GITHUB_ENV && cd ../../../
+      - run: cd neoforge/build/libs && echo "NEOFORGE_NAME=$(ls *.jar)" >> $GITHUB_ENV && cd ../../../
 
       - name: Upload Neoforge
         uses: actions/upload-artifact@v4.6.2
