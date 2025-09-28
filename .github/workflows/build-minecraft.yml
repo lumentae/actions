@@ -1,0 +1,43 @@
+name: "Build Minecraft Project"
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: true
+        type: string
+      mod-name:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java ${{ inputs.java-version }}
+        run: echo "JAVA_HOME=$JAVA_HOME_${{ inputs.java-version }}_X64" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: gradle build
+        
+      - run: rm fabric/build/libs/*-*-*-*-*.jar
+      - run: echo "FABRIC_NAME=$(ls fabric/build/libs/*.jar)" >> $GITHUB_ENV
+        
+      - name: Upload Fabric
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: ${{ env.FABRIC_NAME }}
+          path: fabric/build/libs/*.jar
+
+      - run: rm neoforge/build/libs/*-*-*-*-*.jar
+      - run: echo "NEOFORGE_NAME=$(ls fabric/build/libs/*.jar)" >> $GITHUB_ENV
+
+      - name: Upload Neoforge
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: ${{ env.NEOFORGE_NAME }}
+          path: neoforge/build/libs/*.jar
+        
