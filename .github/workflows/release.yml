@@ -7,10 +7,6 @@ on:
         type: string
         required: true
         description: "The commit message"
-      branch:
-        type: string
-        default: main
-        description: "The branch to commit to"
 
 jobs:
   release:
@@ -40,16 +36,14 @@ jobs:
 
       - name: Generate changelog
         run: conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+
+      - run: ls -la
           
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           commit_message: "docs: update changelog for v${{ steps.get_version.outputs.version }}"
-          branch: ${{ inputs.branch }}
-          commit_user_name: github-actions
-          commit_user_email: actions@github.com
-          commit_author: github-actions <actions@github.com>
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
