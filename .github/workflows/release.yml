@@ -12,6 +12,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     if: startsWith(github.event.head_commit.message, '[release v')
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,12 +47,6 @@ jobs:
           git add CHANGELOG.md
           git commit -m "docs: update changelog for v${{ steps.get_version.outputs.version }}" || echo "No changes to commit"
           git push
-
-      - name: Archive all release artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-artifacts-v${{ steps.get_version.outputs.version }}
-          path: artifacts/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
