@@ -37,16 +37,17 @@ jobs:
       - run: npm install -g conventional-changelog-cli
 
       - name: Generate changelog
-        run: |
-          conventional-changelog -p angular -i CHANGELOG.md -s -r 0
-
-      - name: Commit changelog
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add CHANGELOG.md
-          git commit -m "docs: update changelog for v${{ steps.get_version.outputs.version }}" || echo "No changes to commit"
-          git push
+        run: conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+          
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: "docs: update changelog for v${{ steps.get_version.outputs.version }}"
+          branch: main
+          commit_user_name: github-actions
+          commit_user_email: actions@github.com
+          commit_author: github-actions <actions@github.com>
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -55,6 +56,3 @@ jobs:
           name: Release v${{ steps.get_version.outputs.version }}
           body_path: CHANGELOG.md
           files: artifacts/**/*
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
