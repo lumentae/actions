@@ -6,7 +6,11 @@ on:
       commit-message:
         type: string
         required: true
-        description: 'The commit message'
+        description: "The commit message"
+      branch:
+        type: string
+        default: main
+        description: "The branch to commit to"
 
 jobs:
   release:
@@ -44,7 +48,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           commit_message: "docs: update changelog for v${{ steps.get_version.outputs.version }}"
-          branch: main
+          branch: ${{ inputs.branch }}
           commit_user_name: github-actions
           commit_user_email: actions@github.com
           commit_author: github-actions <actions@github.com>
