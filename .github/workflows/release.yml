@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      commit-message:
+        type: string
+        required: true
+        description: 'The commit message'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, '[release v')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set release version from commit message
+        id: get_version
+        run: |
+          VERSION=$(echo "${{ inputs.commit-message }}" | grep -oP '\[release v\K[^\]]+')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: artifacts/
+
+      - name: Install changelog generator
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install -g conventional-changelog-cli
+
+      - name: Generate changelog
+        run: |
+          conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+
+      - name: Commit changelog
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CHANGELOG.md
+          git commit -m "docs: update changelog for v${{ steps.get_version.outputs.version }}" || echo "No changes to commit"
+          git push
+
+      - name: Archive all release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-v${{ steps.get_version.outputs.version }}
+          path: artifacts/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          body_path: CHANGELOG.md
+          files: artifacts/**/*
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
