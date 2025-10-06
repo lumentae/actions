@@ -45,7 +45,12 @@ jobs:
         with:
           commit_message: "docs: update changelog for v${{ steps.get_version.outputs.version }}"
 
-      - run: ls -la artifacts/**/*
+      - name: Zip all artifacts
+        run: |
+          cd artifacts
+          for dir in */ ; do
+            zip -r "${dir%/}.zip" "$dir"
+          done
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -53,4 +58,4 @@ jobs:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
           body_path: CHANGELOG.md
-          files: artifacts/*
+          files: artifacts/*.zip
