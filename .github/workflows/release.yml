@@ -38,8 +38,6 @@ jobs:
 
       - name: Generate changelog
         run: conventional-changelog -p angular -i CHANGELOG.md -s -r 0
-
-      - run: ls -la
           
       - uses: stefanzweifel/git-auto-commit-action@v4
         env:
@@ -53,4 +51,4 @@ jobs:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
           body_path: CHANGELOG.md
-          files: artifacts/**/*
+          files: artifacts/*
