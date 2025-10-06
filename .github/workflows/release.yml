@@ -45,6 +45,8 @@ jobs:
         with:
           commit_message: "docs: update changelog for v${{ steps.get_version.outputs.version }}"
 
+      - run: ls -la artifacts/
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
