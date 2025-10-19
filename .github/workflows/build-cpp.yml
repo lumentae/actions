@@ -12,6 +12,11 @@ on:
         required: false
         description: 'The project name'
         default: ${{ github.event.repository.name }}
+      system_packages:
+        type: string
+        required: false
+        description: 'A list of system packages to install'
+        default: ''
 
 jobs:
   build:
@@ -22,6 +27,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install system packages
+        if: runner.os == 'Linux' && inputs.system_packages != ''
+        run: sudo apt install ${{ inputs.system_packages }}
 
       - name: Install vcpkg (Windows)
         if: runner.os == 'Windows'
@@ -38,6 +47,7 @@ jobs:
           pkgs: ${{ inputs.vcpkg_packages }}
           triplet: x64-linux
           token: ${{ github.token }}
+
 
       - name: Configure CMake (Debug) [Windows]
         if: runner.os == 'Windows'
