@@ -45,14 +45,35 @@ jobs:
         with:
           commit_message: "docs: update changelog for v${{ steps.get_version.outputs.version }}"
 
+
+      - name: Check if artifacts folder has entries
+        id: check_artifacts
+        run: |
+          if [ -d "artifacts" ] && [ "$(ls -A artifacts)" ]; then
+            echo "has_entries=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_entries=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Zip all artifacts
+        if: steps.check_artifacts.outputs.has_entries == 'true'
         run: |
           cd artifacts
           for dir in */ ; do
             zip -r "${dir%/}.zip" "$dir"
           done
 
+
+      - name: Create GitHub Release (without files)
+        if: steps.check_artifacts.outputs.has_entries == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          body_path: CHANGELOG.md
+
       - name: Create GitHub Release
+        if: steps.check_artifacts.outputs.has_entries == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
