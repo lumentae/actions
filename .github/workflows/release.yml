@@ -2,11 +2,6 @@ name: Release
 
 on:
   workflow_call:
-    inputs:
-      commit-message:
-        type: string
-        required: true
-        description: "The commit message"
 
 jobs:
   release:
@@ -21,7 +16,7 @@ jobs:
       - name: Set release version from commit message
         id: get_version
         run: |
-          VERSION=$(echo "${{ inputs.commit-message }}" | grep -oP '\[release v\K[^\]]+')
+          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP '\[release v\K[^\]]+')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Download build artifacts
