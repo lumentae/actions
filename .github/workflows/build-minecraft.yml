@@ -39,5 +39,5 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: ${{ env.NEOFORGE_NAME }}
-          path: neoforge/build/libs/${{ env.FABRIC_NAME }}
+          path: neoforge/build/libs/${{ env.NEOFORGE_NAME }}
         
