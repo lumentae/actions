@@ -57,12 +57,8 @@ jobs:
           npm i -g conventional-changelog-conventionalcommits
           npm i -g conventional-github-releaser
 
-      - name: Set github token
-        run: |
-          export CONVENTIONAL_GITHUB_RELEASER_TOKEN=${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate changelog
-        run: conventional-github-releaser -p conventionalcommits
+        run: CONVENTIONAL_GITHUB_RELEASER_TOKEN=${{ secrets.GITHUB_TOKEN }} conventional-github-releaser -p conventionalcommits
         
 
       - name: Create GitHub Release (without files)
