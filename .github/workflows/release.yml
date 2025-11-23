@@ -41,12 +41,33 @@ jobs:
           done
 
 
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install changelog generator
+        run: |
+          npm i -g conventional-changelog
+          npm i -g conventional-changelog-conventionalcommits
+
+      - name: Generate changelog
+        run: conventional-changelog -p conventionalcommits -o CHANGELOG.md
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: "docs: update changelog for v${{ steps.get_version.outputs.version }}"
+
+
       - name: Create GitHub Release (without files)
         if: steps.check_artifacts.outputs.has_entries == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
+          body_path: CHANGELOG.md
 
       - name: Create GitHub Release
         if: steps.check_artifacts.outputs.has_entries == 'true'
@@ -55,3 +76,4 @@ jobs:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
           files: artifacts/*.zip
+          body_path: CHANGELOG.md
