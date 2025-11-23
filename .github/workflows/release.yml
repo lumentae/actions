@@ -42,6 +42,8 @@ jobs:
             zip -r "${dir%/}.zip" "$dir"
           done
 
+      - name: Remove artifact directory
+        run: rm -rf artifacts
 
       - name: Install node
         uses: actions/setup-node@v4
