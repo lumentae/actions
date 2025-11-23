@@ -44,21 +44,6 @@ jobs:
 
       - name: Remove artifact directory
         run: rm -rf artifacts
-
-
-      - name: Install node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      - name: Install changelog generator
-        run: |
-          npm i -g conventional-changelog
-          npm i -g conventional-changelog-conventionalcommits
-          npm i -g conventional-github-releaser
-
-      - name: Generate changelog
-        run: CONVENTIONAL_GITHUB_RELEASER_TOKEN=${{ secrets.GITHUB_TOKEN }} conventional-github-releaser -p conventionalcommits
         
 
       - name: Create GitHub Release (without files)
@@ -67,7 +52,6 @@ jobs:
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
-          body_path: CHANGELOG.md
 
       - name: Create GitHub Release
         if: steps.check_artifacts.outputs.has_entries == 'true'
@@ -76,4 +60,3 @@ jobs:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
           files: artifacts/*.zip
-          body_path: CHANGELOG.md
