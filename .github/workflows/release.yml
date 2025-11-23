@@ -5,6 +5,8 @@ on:
 
 jobs:
   release:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     if: startsWith(github.event.head_commit.message, '[release v')
     steps:
