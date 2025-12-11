@@ -113,7 +113,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: "${{ runner.os }}-Debug"
-          path: build-cmake-debug/${{ inputs.project_name }}.so
+          path: build-cmake-debug/${{ inputs.is_library && 'lib' || '' }}${{ inputs.project_name }}.so
 
           
       - name: Upload Release (Windows)
@@ -135,4 +135,4 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: "${{ runner.os }}-Release"
-          path: build-cmake-release/${{ inputs.project_name }}.so
+          path: build-cmake-release/${{ inputs.is_library && 'lib' || '' }}${{ inputs.project_name }}.so
