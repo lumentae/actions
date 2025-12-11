@@ -33,7 +33,7 @@ jobs:
         run: sudo apt install ${{ inputs.system_packages }}
 
       - name: Install vcpkg (Windows)
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && inputs.vcpkg_packages != ''
         uses: johnwason/vcpkg-action@v7.0.1
         with:
           pkgs: ${{ inputs.vcpkg_packages }}
@@ -41,7 +41,7 @@ jobs:
           token: ${{ github.token }}
 
       - name: Install vcpkg (Linux)
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && inputs.vcpkg_packages != ''
         uses: johnwason/vcpkg-action@v7.0.1
         with:
           pkgs: ${{ inputs.vcpkg_packages }}
