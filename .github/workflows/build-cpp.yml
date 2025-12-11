@@ -75,7 +75,7 @@ jobs:
 
       - name: Configure CMake (Release) [Windows]
         if: runner.os == 'Windows' && inputs.vcpkg_packages == ''
-        run: cmake -B ${{github.workspace}}/build-cmake-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_MANIFEST_MODE=OFF
+        run: cmake -B ${{github.workspace}}/build-cmake-release -DCMAKE_BUILD_TYPE=Release
 
       - name: Configure CMake (Release) [Linux, vcpkg]
         if: runner.os == 'Linux' && inputs.vcpkg_packages != ''
