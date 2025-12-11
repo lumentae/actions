@@ -47,35 +47,43 @@ jobs:
           pkgs: ${{ inputs.vcpkg_packages }}
           triplet: x64-linux
           token: ${{ github.token }}
-          
-      - name: Create empty toolchain file (Linux)
-        if: runner.os == 'Windows' && inputs.vcpkg_packages == ''
-        run: type nul > "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        
-      - name: Create empty toolchain file (Linux)
-        if: runner.os == 'Linux' && inputs.vcpkg_packages == ''
-        run: touch "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        
+
+
+      - name: Configure CMake (Debug) [Windows, vcpkg]
+        if: runner.os == 'Windows' && inputs.vcpkg_packages != ''
+        run: cmake -B ${{github.workspace}}/build-cmake-debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_MANIFEST_MODE=OFF
 
       - name: Configure CMake (Debug) [Windows]
-        if: runner.os == 'Windows'
-        run: cmake -B ${{github.workspace}}/build-cmake-debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_MANIFEST_MODE=OFF
+        if: runner.os == 'Windows' && inputs.vcpkg_packages == ''
+        run: cmake -B ${{github.workspace}}/build-cmake-debug -DCMAKE_BUILD_TYPE=Debug
         
-      - name: Configure CMake (Debug) [Linux]
-        if: runner.os == 'Linux'
+      - name: Configure CMake (Debug) [Linux, vcpkg]
+        if: runner.os == 'Linux' && inputs.vcpkg_packages != ''
         run: cmake -B ${{github.workspace}}/build-cmake-debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DVCPKG_MANIFEST_MODE=OFF
+
+      - name: Configure CMake (Debug) [Linux]
+        if: runner.os == 'Linux' && inputs.vcpkg_packages == ''
+        run: cmake -B ${{github.workspace}}/build-cmake-debug -DCMAKE_BUILD_TYPE=Debug
   
       - name: Build (Debug)
         run: cmake --build ${{github.workspace}}/build-cmake-debug --config Debug
 
   
-      - name: Configure CMake (Release) [Windows]
-        if: runner.os == 'Windows'
+      - name: Configure CMake (Release) [Windows, vcpkg]
+        if: runner.os == 'Windows' && inputs.vcpkg_packages != ''
         run: cmake -B ${{github.workspace}}/build-cmake-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_MANIFEST_MODE=OFF
 
-      - name: Configure CMake (Release) [Linux]
-        if: runner.os == 'Linux'
+      - name: Configure CMake (Release) [Windows]
+        if: runner.os == 'Windows' && inputs.vcpkg_packages == ''
+        run: cmake -B ${{github.workspace}}/build-cmake-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_MANIFEST_MODE=OFF
+
+      - name: Configure CMake (Release) [Linux, vcpkg]
+        if: runner.os == 'Linux' && inputs.vcpkg_packages != ''
         run: cmake -B ${{github.workspace}}/build-cmake-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DVCPKG_MANIFEST_MODE=OFF
+
+      - name: Configure CMake (Release) [Linux]
+        if: runner.os == 'Linux' && inputs.vcpkg_packages == ''
+        run: cmake -B ${{github.workspace}}/build-cmake-release -DCMAKE_BUILD_TYPE=Release
   
       - name: Build (Release)
         run: cmake --build ${{github.workspace}}/build-cmake-release --config Release
