@@ -47,7 +47,15 @@ jobs:
           pkgs: ${{ inputs.vcpkg_packages }}
           triplet: x64-linux
           token: ${{ github.token }}
-
+          
+      - name: Create empty toolchain file (Linux)
+        if: runner.os == 'Windows' && inputs.vcpkg_packages == ''
+        run: type nul > "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        
+      - name: Create empty toolchain file (Linux)
+        if: runner.os == 'Linux' && inputs.vcpkg_packages == ''
+        run: touch "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        
 
       - name: Configure CMake (Debug) [Windows]
         if: runner.os == 'Windows'
