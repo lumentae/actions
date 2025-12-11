@@ -17,6 +17,11 @@ on:
         required: false
         description: 'A list of system packages to install'
         default: ''
+      is_library:
+        type: boolean
+        required: false
+        description: 'If the project to build is a library (.so or .dll)'
+        default: false
 
 jobs:
   build:
@@ -97,11 +102,18 @@ jobs:
           path: build-cmake-debug/Debug
 
       - name: Upload Debug (Linux)
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && !inputs.is_library 
         uses: actions/upload-artifact@v4.6.2
         with:
           name: "${{ runner.os }}-Debug"
           path: build-cmake-debug/${{ inputs.project_name }}
+
+      - name: Upload Debug (Linux) [library]
+        if: runner.os == 'Linux' && inputs.is_library 
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: "${{ runner.os }}-Debug"
+          path: build-cmake-debug/${{ inputs.project_name }}.so
 
           
       - name: Upload Release (Windows)
@@ -112,8 +124,15 @@ jobs:
           path: build-cmake-release/Release
           
       - name: Upload Release (Linux)
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && !inputs.is_library 
         uses: actions/upload-artifact@v4.6.2
         with:
           name: "${{ runner.os }}-Release"
           path: build-cmake-release/${{ inputs.project_name }}
+          
+      - name: Upload Release (Linux) [library]
+        if: runner.os == 'Linux' && inputs.is_library 
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: "${{ runner.os }}-Release"
+          path: build-cmake-release/${{ inputs.project_name }}.so
