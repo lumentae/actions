@@ -1,0 +1,59 @@
+name: "Build C++ Projects"
+
+on:
+  workflow_call:
+    inputs:
+      project_name:
+        type: string
+        required: false
+        description: 'The project name'
+        default: ${{ github.event.repository.name }}
+      dotnet_version:
+        type: string
+        required: true
+        description: 'The .NET version'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore dependencies
+        run: dotnet restore
+        
+      - name: Build Debug
+        run: dotnet build
+        
+      - name: Build Release [windows]
+        if: runner.os == 'Windows'
+        run: dotnet publish -p:PublishSingleFile=true -r win-x64 -c Release --self-contained false
+        
+      - name: Build Release [linux]
+        if: runner.os == 'Linux'
+        run: dotnet publish -p:PublishSingleFile=true -r linux-x64 -c Release --self-contained false
+
+      - name: Upload Debug
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: Debug
+          path: "${{ inputs.project_name }}/bin/Debug/net${{ inputs.dotnet_version }}"
+          
+      - name: Upload Release [windows]
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v3.0.0
+        with:
+           name: Release
+           path: "${{ inputs.project_name }}\\bin\\Release\\net${{ inputs.dotnet_version }}\\win-x64\\publish"
+          
+      - name: Upload Release [linux]
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v3.0.0
+        with:
+           name: Release
+           path: "${{ inputs.project_name }}/bin/Release/net${{ inputs.dotnet_version }}/linux-x64/publish"
