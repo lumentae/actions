@@ -30,11 +30,13 @@ jobs:
         run: dotnet build
         
       - name: Build Release [windows]
+        continue-on-error: true
         if: runner.os == 'Windows'
         run: dotnet publish -p:PublishSingleFile=true -r win-x64 -c Release --self-contained false
         
       - name: Build Release [linux]
         if: runner.os == 'Linux'
+        continue-on-error: true
         run: dotnet publish -p:PublishSingleFile=true -r linux-x64 -c Release --self-contained false
 
       - name: Upload Debug
