@@ -43,19 +43,19 @@ jobs:
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: Debug
+          name: "${{ inputs.project_name }}-${{ runner.os }}-Debug"
           path: "${{ inputs.project_name }}/bin/Debug/net${{ inputs.dotnet_version }}"
           
       - name: Upload Release [windows]
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4.6.2
         with:
-           name: Release
-           path: "${{ inputs.project_name }}\\bin\\Release\\net${{ inputs.dotnet_version }}\\win-x64\\publish"
+          name: "${{ inputs.project_name }}-${{ runner.os }}-Release"
+          path: "${{ inputs.project_name }}\\bin\\Release\\net${{ inputs.dotnet_version }}\\win-x64\\publish"
           
       - name: Upload Release [linux]
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4.6.2
         with:
-           name: Release
-           path: "${{ inputs.project_name }}/bin/Release/net${{ inputs.dotnet_version }}/linux-x64/publish"
+          name: "${{ inputs.project_name }}-${{ runner.os }}-Release"
+          path: "${{ inputs.project_name }}/bin/Release/net${{ inputs.dotnet_version }}/linux-x64/publish"
