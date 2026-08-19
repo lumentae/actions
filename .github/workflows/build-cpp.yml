@@ -38,6 +38,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      ### Setup ###
+
       - name: Install system packages
         if: runner.os == 'Linux' && inputs.system_packages != ''
         run: sudo apt install ${{ inputs.system_packages }}
@@ -46,6 +48,16 @@ jobs:
         if: inputs.python_packages != ''
         run: pip install ${{ inputs.python_packages }} --break-system-packages
 
+      - name: Setup MSVC environment
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      - name: Prepend MSVC tools to PATH
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          echo "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\bin\Hostx64\x64" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      
       - name: Install vcpkg (Windows)
         if: runner.os == 'Windows' && inputs.vcpkg_packages != ''
         uses: johnwason/vcpkg-action@v7.0.1
@@ -62,6 +74,7 @@ jobs:
           triplet: x64-linux
           token: ${{ github.token }}
 
+      ### Actual compiling ###
 
       - name: Configure CMake (Debug) [Windows, vcpkg]
         if: runner.os == 'Windows' && inputs.vcpkg_packages != ''
@@ -102,6 +115,7 @@ jobs:
       - name: Build (Release)
         run: cmake --build ${{github.workspace}}/build-cmake-release --config Release
 
+      ### Uploading ###
   
       - name: Upload Debug (Windows)
         if: runner.os == 'Windows'
