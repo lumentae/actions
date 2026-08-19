@@ -22,6 +22,11 @@ on:
         required: false
         description: 'If the project to build is a library (.so or .dll)'
         default: false
+      python_packages:
+        type: string
+        required: false
+        description: 'A list of python packages to install'
+        default: ''
 
 jobs:
   build:
@@ -36,6 +41,10 @@ jobs:
       - name: Install system packages
         if: runner.os == 'Linux' && inputs.system_packages != ''
         run: sudo apt install ${{ inputs.system_packages }}
+
+      - name: Install python packages
+        if: inputs.python_packages != ''
+        run: pip install ${{ inputs.python_packages }} --break-system-packages
 
       - name: Install vcpkg (Windows)
         if: runner.os == 'Windows' && inputs.vcpkg_packages != ''
